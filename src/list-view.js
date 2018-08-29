@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash";
-import { Icon } from "@blueprintjs/core";
+import { Icon, Popover, Menu, MenuItem, Position } from "@blueprintjs/core";
 
 class ListView extends React.Component {
   static get defaultProps() {
@@ -31,7 +31,9 @@ class ListView extends React.Component {
     return (
       <table className="list-view">
         <tbody>
-          {data.map(item => <ListItem {...listItemProps} item={item} />)}
+          {data.map(item => (
+            <ListItem {...listItemProps} item={item} key={item._id} />
+          ))}
         </tbody>
       </table>
     );
@@ -48,7 +50,7 @@ function ListItem({
   itemMenuActions = []
 }) {
   return (
-    <tr className="list-item" key={item._id}>
+    <tr className="list-item">
       {PrimaryInfo && (
         <PrimaryInfo
           item={item}
@@ -60,7 +62,7 @@ function ListItem({
       {Actions && (
         <Actions
           item={item}
-          className="left-cap"
+          className="right-cap"
           itemActions={itemActions}
           itemMenuActions={itemMenuActions}
         />
@@ -109,44 +111,91 @@ function LI_Actions({
   item,
   className,
   itemActions = [],
-  itemMenuActions = []
+  itemMenuActions = [],
+  Action = LI_Action
 }) {
   const classNames = className + " list-item-actions";
+  let actionClassNames = "list-item-action";
+
+  if (
+    itemActions &&
+    itemActions.length === 1 &&
+    (!itemMenuActions || itemMenuActions.length === 0)
+  ) {
+    actionClassNames += " list-item-action__no-separator";
+  }
+
   return (
     <td className={classNames}>
       {itemActions.map(itemAction => {
-        if (itemAction.showFn(item)) {
-          return itemAction.actionRender ? (
-            itemAction.actionRender()
-          ) : (
-            <span title={itemAction.label} key={itemAction.label}>
-              <Icon
-                className="list-item-action"
-                icon={itemAction.icon}
-                title={itemAction.label}
-                onClick={itemAction.clickFn}
-              />
-            </span>
-          );
-        } else {
-          return "";
-        }
+        return (
+          <Action
+            item={item}
+            itemAction={itemAction}
+            disabled={!itemAction.actionEnabledFn(item)}
+            className={actionClassNames}
+            key={itemAction.label}
+          />
+        );
       })}
 
       {itemMenuActions &&
-        itemMenuActions.length > 0 && <div className="menu">…</div>}
+        itemMenuActions.length > 0 && (
+          <div className="menu">
+            <Popover
+              content={
+                <Menu>
+                  {itemMenuActions.map(itemMenuAction => {
+                    return (
+                      <MenuItem
+                        disabled={!itemMenuAction.actionEnabledFn(item)}
+                        text={itemMenuAction.label}
+                        icon={itemMenuAction.icon}
+                        onClick={() => itemMenuAction.clickFn(item)}
+                        key={itemMenuAction.label}
+                      />
+                    );
+                  })}
+                </Menu>
+              }
+              position={Position.RIGHT_TOP}
+            >
+              <Icon icon="more" />
+            </Popover>
+          </div>
+        )}
     </td>
   );
 }
 
+function LI_Action({
+  itemAction,
+  item,
+  disabled,
+  className = "list-item-action"
+}) {
+  const classNames =
+    className + (disabled ? " list-item-action__disabled" : "");
+
+  return (
+    <span title={itemAction.label}>
+      <Icon
+        className={classNames}
+        icon={itemAction.icon}
+        title={itemAction.label}
+        onClick={!disabled ? () => itemAction.clickFn(item) : null}
+      />
+    </span>
+  );
+}
 const makeItemAction = ({
   label,
   icon = null,
-  actionRender = null,
-  showFn = () => true,
+  Action = LI_Action,
+  actionEnabledFn = () => true,
   clickFn = _.identity
 }) => {
-  return { label, icon, actionRender, showFn, clickFn };
+  return { label, icon, Action, actionEnabledFn, clickFn };
 };
 
 export default ListView;

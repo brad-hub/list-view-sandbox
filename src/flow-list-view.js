@@ -6,7 +6,7 @@ export default function FlowListView({ data, loading }) {
     makeItemAction({
       label: "Download as CSV",
       icon: "download",
-      showFn: item => {
+      actionEnabledFn: item => {
         return item.name.length % 2 === 0;
       },
       clickFn: item => {
@@ -17,13 +17,23 @@ export default function FlowListView({ data, loading }) {
 
   const itemMenuActions = [
     makeItemAction({
-      label: "Download as CSV",
-      icon: "download",
-      showFn: item => {
-        return item.name.length % 2 === 0;
+      label: "Copy",
+      icon: "duplicate",
+      actionEnabledFn: item => {
+        return true;
       },
       clickFn: item => {
-        alert("Download " + item.name + " clicked");
+        alert("Copy " + item.name + " clicked");
+      }
+    }),
+    makeItemAction({
+      label: "Delete",
+      icon: "delete",
+      actionEnabledFn: item => {
+        return true;
+      },
+      clickFn: item => {
+        alert("Delete " + item.name + " clicked");
       }
     })
   ];
@@ -33,6 +43,7 @@ export default function FlowListView({ data, loading }) {
       primaryClickHandler={item => alert(item.name + " clicked")}
       SecondaryInfo={null}
       itemActions={itemActions}
+      itemMenuActions={itemMenuActions}
       data={data}
       loading={loading}
     />

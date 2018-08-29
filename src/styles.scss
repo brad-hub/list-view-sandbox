@@ -80,6 +80,24 @@ table {
     & > div:last-of-type {
       // margin-bottom: 0;
     }
+
+    .list-item-action {
+      cursor: pointer;
+      padding: 4px 8px 4px 0;
+      border-right: 1px solid #999;
+      margin: 4px 8px 4px 0;
+
+      &__disabled {
+        cursor: auto;
+        fill: #aaa;
+        border-right-color: #aaa;
+      }
+
+      &__no-separator {
+        border: none;
+        padding-right: 0;
+      }
+    }
   }
 
   .list-item-info {
