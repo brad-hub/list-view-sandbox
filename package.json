@@ -1,0 +1,20 @@
+{
+  "name": "flow-list-view-prototype",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "parcel index.html --open",
+    "build": "parcel build index.html"
+  },
+  "dependencies": {
+    "@blueprintjs/core": "3.4.0",
+    "lodash": "4.17.10",
+    "react": "16.4.1",
+    "react-dom": "16.4.1"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.6.1"
+  },
+  "keywords": []
+}

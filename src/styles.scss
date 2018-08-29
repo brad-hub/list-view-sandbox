@@ -1,0 +1,126 @@
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.App {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  // text-align: center;
+}
+
+.list-view {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 16px;
+  background: #f0f7ff;
+  // text-align: left;
+  // padding: 16px 12px;
+
+  .list-item {
+    background: #fed;
+    // text-align: left;
+    // margin-bottom: 12px;
+    // padding: 12px 12px;
+
+    &:last-of-type {
+      // margin-bottom: 0;
+    }
+  }
+
+  .left-cap {
+    width: 12px;
+    background: #999;
+    border-radius: 5px 0 0 5px;
+  }
+
+  .right-cap {
+    width: 12px;
+    background: pink;
+    border-radius: 0 5px 5px 0;
+  }
+
+  .list-item-info,
+  .list-item-addl-info,
+  .list-item-actions {
+    // display: inline-block;
+    font-size: 14px;
+    color: #888;
+
+    svg {
+      fill: #888;
+    }
+
+    & > div {
+      // margin-bottom: 5px;
+    }
+
+    & > div:last-of-type {
+      // margin-bottom: 0;
+    }
+  }
+
+  .list-item-info {
+    background: #ddd;
+    width: 45%;
+
+    .status {
+      display: inline-block;
+      font-size: 18px;
+      font-weight: 500;
+      margin-right: 8px;
+
+      &--ok {
+        color: green;
+      }
+
+      &--error {
+        color: red;
+      }
+    }
+    .name {
+      display: inline-block;
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .shared {
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 4px;
+    }
+  }
+
+  .list-item-addl-info {
+    width: 45%;
+  }
+
+  .list-item-actions {
+    background: #bbf;
+    width: 5%;
+    min-width: 50px;
+    text-align: right;
+
+    & > div {
+      display: inline-block;
+    }
+  }
+}
