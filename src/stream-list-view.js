@@ -2,7 +2,7 @@ import React from "react";
 import { Icon } from "@blueprintjs/core";
 import ListView from "./list-view";
 
-export default function StreamListView({ data }) {
+export default function StreamListView({ data, loading }) {
   function StreamsSecondaryInfo({ item, className }) {
     const classNames = className + " list-item-addl-info";
     return (
@@ -20,10 +20,9 @@ export default function StreamListView({ data }) {
   return (
     <ListView
       primaryClickHandler={item => alert(item.name + " clicked")}
-      secondaryRender={(item, className) => (
-        <StreamsSecondaryInfo className={className} item={item} />
-      )}
+      SecondaryInfo={StreamsSecondaryInfo}
       data={data}
+      loading={loading}
     />
   );
 }

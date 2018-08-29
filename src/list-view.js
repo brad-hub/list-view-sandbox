@@ -5,45 +5,33 @@ import { Icon } from "@blueprintjs/core";
 class ListView extends React.Component {
   static get defaultProps() {
     return {
-      itemRender: props => <ListItem {...props} />,
-      primaryRender: (item, primaryClickHandler, className) => (
-        <LI_PrimaryInfo
-          className={className}
-          primaryClickHandler={primaryClickHandler}
-          item={item}
-        />
-      ),
-      secondaryRender: (item, className) => (
-        <LI_SecondaryInfo className={className} item={item} />
-      ),
-      actionsRender: (item, className) => (
-        <LI_Actions className={className} item={item} />
-      )
+      PrimaryInfo: LI_PrimaryInfo,
+      SecondaryInfo: LI_SecondaryInfo,
+      Actions: LI_Actions,
+      ListItem: ListItem,
+      loading: false,
+      itemActions: [],
+      itemMenuActions: []
     };
   }
 
   render() {
     const {
       data,
-      primaryRender,
+      PrimaryInfo,
       primaryClickHandler,
-      secondaryRender,
-      actionsRender,
-      itemRender
+      SecondaryInfo,
+      Actions,
+      ListItem,
+      itemActions = [],
+      itemMenuActions = []
     } = this.props;
+    const listItemProps = _.omit(this.props, ["data"]);
 
     return (
       <table className="list-view">
         <tbody>
-          {data.map(item =>
-            itemRender({
-              primaryRender,
-              primaryClickHandler,
-              secondaryRender,
-              actionsRender,
-              item
-            })
-          )}
+          {data.map(item => <ListItem {...listItemProps} item={item} />)}
         </tbody>
       </table>
     );
@@ -52,16 +40,31 @@ class ListView extends React.Component {
 
 function ListItem({
   item,
-  primaryRender,
-  primaryClickHandler,
-  secondaryRender,
-  actionsRender
+  PrimaryInfo = null,
+  SecondaryInfo = null,
+  Actions = null,
+  primaryClickHandler = null,
+  itemActions = [],
+  itemMenuActions = []
 }) {
   return (
     <tr className="list-item" key={item._id}>
-      {primaryRender && primaryRender(item, primaryClickHandler, "left-cap")}
-      {secondaryRender && secondaryRender(item)}
-      {actionsRender && actionsRender(item, "right-cap")}
+      {PrimaryInfo && (
+        <PrimaryInfo
+          item={item}
+          className="left-cap"
+          primaryClickHandler={primaryClickHandler}
+        />
+      )}
+      {SecondaryInfo && <SecondaryInfo item={item} />}
+      {Actions && (
+        <Actions
+          item={item}
+          className="left-cap"
+          itemActions={itemActions}
+          itemMenuActions={itemMenuActions}
+        />
+      )}
     </tr>
   );
 }
@@ -102,15 +105,49 @@ function LI_SecondaryInfo({ item, className }) {
   );
 }
 
-function LI_Actions({ item, className }) {
+function LI_Actions({
+  item,
+  className,
+  itemActions = [],
+  itemMenuActions = []
+}) {
   const classNames = className + " list-item-actions";
   return (
     <td className={classNames}>
-      <div className="download">⇓</div>
-      <div className="separator">|</div>
-      <div className="menu">…</div>
+      {itemActions.map(itemAction => {
+        if (itemAction.showFn(item)) {
+          return itemAction.actionRender ? (
+            itemAction.actionRender()
+          ) : (
+            <span title={itemAction.label} key={itemAction.label}>
+              <Icon
+                className="list-item-action"
+                icon={itemAction.icon}
+                title={itemAction.label}
+                onClick={itemAction.clickFn}
+              />
+            </span>
+          );
+        } else {
+          return "";
+        }
+      })}
+
+      {itemMenuActions &&
+        itemMenuActions.length > 0 && <div className="menu">…</div>}
     </td>
   );
 }
 
+const makeItemAction = ({
+  label,
+  icon = null,
+  actionRender = null,
+  showFn = () => true,
+  clickFn = _.identity
+}) => {
+  return { label, icon, actionRender, showFn, clickFn };
+};
+
 export default ListView;
+export { makeItemAction };
